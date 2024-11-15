@@ -1,0 +1,523 @@
+{% extends 'Admin/layout.html' %} {% block content %}
+
+<style>
+  .approve-button,
+  .reject-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+  }
+
+  /* Adding padding to table cells for better column spacing */
+  table.display td,
+  table.display th {
+    padding: 10px 20px;
+    text-align: left;
+  }
+
+  table.display th {
+    font-weight: bold;
+  }
+
+  /* Pagination styling */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 900px;
+  }
+
+  .pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  /* Specific styling for Previous and Next buttons */
+  .pagination .prev-button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .pagination .next-button {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+  }
+
+  /* Transparent styling for page number buttons */
+  .pagination .page-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
+
+  /* Hover effect for page number buttons */
+  .pagination .page-button:hover {
+    background-color: green;
+    color: white;
+  }
+
+  .submit button {
+    margin-left: 600px;
+    background-color: rgb(32, 61, 92);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 80px;
+    height: 30px;
+  }
+</style>
+
+<div class="col-sm-12">
+  <div class="card">
+    <div class="card-header pb-0 card-no-border">
+      <h4>Startup Registration</h4>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive custom-scrollbar">
+        <table class="display" id="student-registration">
+          <thead>
+            <tr>
+              <th>Startup Name</th>
+              <th>Founder Name</th>
+              <th>Date Founded</th>
+              <th>Email</th>
+              <th>Contact Number</th>
+              <th>Sector</th>
+              <th>Company Stage</th>
+              <th>Employee Count</th>
+              <th>Funding Received</th>
+              <th>Key Technologies</th>
+              <th>Address</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Country</th>
+              <th>Zip Code</th>
+              <th>Focus Area</th>
+              <th>Web</th>
+              <th>Funding Duration</th>
+              <th>LinkedIn Profile</th>
+              <th>GitHub Profile</th>
+              <th>Pitch Deck Link</th>
+              <th>Why Should We Support You?</th>
+            </tr>
+          </thead>
+          <tbody id="student-rows">
+            <!-- Rows will be generated here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <button class="prev-button" onclick="prevPage()">Previous</button>
+        <span id="page-buttons"></span>
+        <button class="next-button" onclick="nextPage()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit">
+  <button>Submit</button>
+</div>
+
+<script>
+  const students = [
+    {
+      startupName: "Tech Innovations",
+      founderName: "Alice Johnson",
+      dateFounded: "2020/09/15",
+      email: "alicejohnson@techinnovations.com",
+      contactNumber: "+1987654321",
+      sector: "Technology",
+      companyStage: "Seed",
+      employeeCount: 25,
+      fundingReceived: "$500,000",
+      keyTechnologies: "AI, Machine Learning, Cloud Computing",
+      address: "456 Tech Park, Silicon Valley, CA, USA, 94043",
+      city: "Silicon Valley",
+      state: "California",
+      country: "USA",
+      zipCode: "94043",
+      focusArea: "AI-driven solutions for healthcare",
+      web: "https://techinnovations.com",
+      fundingDuration: "2 years",
+      linkedin: "https://linkedin.com/in/alicejohnson",
+      github: "https://github.com/techinnovations",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We aim to revolutionize the healthcare industry with AI solutions that improve patient outcomes.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+    {
+      startupName: "Green Solutions",
+      founderName: "Bob Smith",
+      dateFounded: "2021/03/11",
+      email: "bobsmith@greensolutions.com",
+      contactNumber: "+1123456789",
+      sector: "Sustainability",
+      companyStage: "Early",
+      employeeCount: 10,
+      fundingReceived: "$150,000",
+      keyTechnologies: "Solar Power, Renewable Energy",
+      address: "789 Eco Street, Green City, State, 678910",
+      city: "Green City",
+      state: "Eco State",
+      country: "Canada",
+      zipCode: "678910",
+      focusArea: "Sustainable energy solutions for urban development",
+      web: "https://greensolutions.com",
+      fundingDuration: "1.5 years",
+      linkedin: "https://linkedin.com/in/bobsmith",
+      github: "https://github.com/greensolutions",
+      pitchDeckLink: "https://pitchdeck-link.com",
+      whySupport:
+        "We are committed to making cities greener by providing affordable renewable energy solutions.",
+    },
+  ];
+
+  const rowsPerPage = 10;
+  let currentPage = 1;
+
+  function displayPage(page) {
+    const start = (page - 1) * rowsPerPage;
+    const end = page * rowsPerPage;
+    const studentRows = document.getElementById("student-rows");
+    studentRows.innerHTML = "";
+
+    students.slice(start, end).forEach((student, index) => {
+      studentRows.innerHTML += `
+        <tr>
+  <td>${student.startupName}</td>
+  <td>${student.founderName}</td>
+  <td>${student.dateFounded}</td>
+  <td>${student.email}</td>
+  <td>${student.contactNumber}</td>
+  <td>${student.sector}</td>
+  <td>${student.companyStage}</td>
+  <td>${student.employeeCount}</td>
+  <td>${student.fundingReceived}</td>
+  <td>${student.keyTechnologies}</td>
+  <td>${student.address}</td>
+  <td>${student.city}</td>
+  <td>${student.state}</td>
+  <td>${student.country}</td>
+  <td>${student.zipCode}</td>
+  <td>${student.focusArea}</td>
+  <td><a href="${student.website}" target="_blank">Website</a></td>
+  <td>${student.fundingDuration}</td>
+  <td><a href="${student.linkedin}" target="_blank">LinkedIn</a></td>
+  <td><a href="${student.github}" target="_blank">GitHub</a></td>
+  <td><a href="${student.pitchDeck}" target="_blank">Pitch Deck</a></td>
+  <td>${student.whySupport}</td>
+</tr>
+
+      `;
+    });
+    updatePaginationButtons();
+  }
+
+  function updatePaginationButtons() {
+    const totalPages = Math.ceil(students.length / rowsPerPage);
+    const pageButtons = document.getElementById("page-buttons");
+    pageButtons.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      pageButtons.innerHTML += `
+        <button onclick="changePage(${i})" ${
+        i === currentPage ? 'style="font-weight: bold;"' : ""
+      }>${i}</button>
+      `;
+    }
+  }
+
+  function changePage(page) {
+    currentPage = page;
+    displayPage(currentPage);
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPage(currentPage);
+    }
+  }
+
+  function nextPage() {
+    const totalPages = Math.ceil(students.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      displayPage(currentPage);
+    }
+  }
+
+  function approveStudent(id) {
+    const cell = document.getElementById("approval-cell-" + id);
+    cell.innerHTML = "Approved";
+  }
+
+  function rejectStudent(id) {
+    const cell = document.getElementById("approval-cell-" + id);
+    cell.innerHTML = "Not Approved";
+  }
+
+  // Initialize display on page load
+  window.onload = () => {
+    displayPage(currentPage);
+  };
+</script>
+
+{% endblock %}

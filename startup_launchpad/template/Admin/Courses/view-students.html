@@ -1,0 +1,408 @@
+{% extends 'Admin/layout.html' %} {% block content %}
+
+<style>
+  .approve-button,
+  .reject-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+  }
+
+  /* Adding padding to table cells for better column spacing */
+  table.display td,
+  table.display th {
+    padding: 10px 20px;
+    text-align: left;
+  }
+
+  table.display th {
+    font-weight: bold;
+  }
+
+  /* Pagination styling */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 900px;
+  }
+
+  .pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  /* Specific styling for Previous and Next buttons */
+  .pagination .prev-button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .pagination .next-button {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+  }
+
+  /* Transparent styling for page number buttons */
+  .pagination .page-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
+
+  /* Hover effect for page number buttons */
+  .pagination .page-button:hover {
+    background-color: green;
+    color: white;
+  }
+
+  .submit button {
+    margin-left: 600px;
+    background-color: rgb(32, 61, 92);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 80px;
+    height: 30px;
+  }
+</style>
+
+<div class="col-sm-12">
+  <div class="card">
+    <div class="card-header pb-0 card-no-border">
+      <h4>Student Registration</h4>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive custom-scrollbar">
+        <table class="display" id="student-registration">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Date of Birth</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+              <th>College Name</th>
+              <th>Department</th>
+              <th>Current Year</th>
+              <th>Graduation Year</th>
+              <th>Skills</th>
+              <th>Address</th>
+              <th>LinkedIn Profile</th>
+              <th>GitHub Profile</th>
+              <th>Resume Link</th>
+              <th>Approve</th>
+            </tr>
+          </thead>
+          <tbody id="student-rows">
+            <!-- Rows will be generated here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <button class="prev-button" onclick="prevPage()">Previous</button>
+        <span id="page-buttons"></span>
+        <button class="next-button" onclick="nextPage()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit">
+  <button>Submit</button>
+</div>
+
+<script>
+  const students = [
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    {
+      name: "John",
+      age: 22,
+      dob: "2002/05/12",
+      email: "johndoe@example.com",
+      phone: "+1234567890",
+      college: "ABC College",
+      department: "Computer Science",
+      year: "3rd Year",
+      gradYear: "2024",
+      skills: "Python, JavaScript",
+      address: "123 Street, Area, City, State, 123456",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      resume: "https://resume-link.com",
+    },
+    // Add more student objects here...
+  ];
+
+  const rowsPerPage = 10;
+  let currentPage = 1;
+
+  function displayPage(page) {
+    const start = (page - 1) * rowsPerPage;
+    const end = page * rowsPerPage;
+    const studentRows = document.getElementById("student-rows");
+    studentRows.innerHTML = "";
+
+    students.slice(start, end).forEach((student, index) => {
+      studentRows.innerHTML += `
+        <tr>
+          <td>${student.name}</td>
+          <td>${student.age}</td>
+          <td>${student.dob}</td>
+          <td>${student.email}</td>
+          <td>${student.phone}</td>
+          <td>${student.college}</td>
+          <td>${student.department}</td>
+          <td>${student.year}</td>
+          <td>${student.gradYear}</td>
+          <td>${student.skills}</td>
+          <td>${student.address}</td>
+          <td><a href="${student.linkedin}" target="_blank">LinkedIn</a></td>
+          <td><a href="${student.github}" target="_blank">GitHub</a></td>
+          <td><a href="${student.resume}" target="_blank">Resume</a></td>
+          <td id="approval-cell-${index + start}">
+            <button class="approve-button" onclick="approveStudent(${
+              index + start
+            })">✔️</button>
+            <button class="reject-button" onclick="rejectStudent(${
+              index + start
+            })">❌</button>
+          </td>
+        </tr>
+      `;
+    });
+    updatePaginationButtons();
+  }
+
+  function updatePaginationButtons() {
+    const totalPages = Math.ceil(students.length / rowsPerPage);
+    const pageButtons = document.getElementById("page-buttons");
+    pageButtons.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      pageButtons.innerHTML += `
+        <button onclick="changePage(${i})" ${
+        i === currentPage ? 'style="font-weight: bold;"' : ""
+      }>${i}</button>
+      `;
+    }
+  }
+
+  function changePage(page) {
+    currentPage = page;
+    displayPage(currentPage);
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPage(currentPage);
+    }
+  }
+
+  function nextPage() {
+    const totalPages = Math.ceil(students.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      displayPage(currentPage);
+    }
+  }
+
+  function approveStudent(id) {
+    const cell = document.getElementById("approval-cell-" + id);
+    cell.innerHTML = "Approved";
+  }
+
+  function rejectStudent(id) {
+    const cell = document.getElementById("approval-cell-" + id);
+    cell.innerHTML = "Not Approved";
+  }
+
+  // Initialize display on page load
+  window.onload = () => {
+    displayPage(currentPage);
+  };
+</script>
+
+{% endblock %}
