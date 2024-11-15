@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'startup_launchpad.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default="postgresql://altruisty_user:Ld1pb5BMT65si0dt4MFmHktaBnjZHVfa@dpg-csrd9cd6l47c73fcrd20-a.oregon-postgres.render.com/altruisty"
+        default=os.getenv('DATABASE_URL')
     )
 }
 
