@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-f7b=ok$v_kx+l&r4kd2%p7x6!x53xp7s3k6!(=*o@b+z9#l@$$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://django-altruisty.onrender.com"]
 
 
 # Application definition
